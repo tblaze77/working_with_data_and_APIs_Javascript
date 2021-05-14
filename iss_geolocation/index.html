@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin=""/>
+
+     
+ <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+ integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+ crossorigin=""></script>
+ <style>
+     #map {
+         height: 180px;
+     }
+ </style>
+    <title>Fetch JSON data for ISS</title>
+</head>
+<body>
+    <h1>Where is the ISS?</h1>
+    <p>latitude: <span id="lat"></span>°</p>
+    <p>longitude: <span id="lon"></span>°</p>
+    <div id="map">
+    </div>
+
+    <script>
+        //attribution for openstreetmap
+        const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>'
+        // creating map object but it doesnt yet have tiles to load
+        var mymap = L.map('map').setView([0, 0], 1);
+        //defining satellite icon
+           const issIcon = L.icon({
+            iconUrl: 'international-space-station-icon.png',
+            iconSize: [50, 32],
+            iconAnchor: [25, 16],
+        }); 
+        //instantiating marker object 
+        const marker = L.marker([0, 0], {icon: issIcon}).addTo(mymap);
+        //tile url
+        const tileURL  = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+        //for tiling map we are going to use openstreetmap.org
+        const api_url = 'https://api.wheretheiss.at/v1/satellites/25544'
+        const tiles = L.tileLayer(tileURL, {attribution});
+        tiles.addTo(mymap);
+        async function getISS() {
+            const response = await fetch(api_url);
+            const data = await response.json();
+            const {latitude, longitude} = data;
+            
+            // L.marker([latitude, longitude]).addTo(mymap);
+            marker.setLatLng([latitude,longitude]);
+            mymap.setView([latitude,longitude],2);
+            document.getElementById("lat").textContent=latitude.toFixed(2);
+            document.getElementById("lon").textContent=longitude.toFixed(2);
+        }
+        
+        getISS();
+
+        setInterval(getISS, 1000);
+
+    </script>
+    
+</body>
+</html>
