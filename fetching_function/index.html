@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 1</title>
+</head>
+<body>
+<!-- Image tag without src defined -->
+ <img src="" id="image"/>
+ <script>
+     console.log('fetching an image');
+     catchRainbow().catch(error => {
+         console.log(error);
+     });
+    /*doing same thing as the function below but with async/await keywords*/
+    async function catchRainbow(){
+        const response = await fetch('basic.jpg');
+        blob = await response.blob();
+        document.getElementById('image').src=URL.createObjectURL(blob);
+    }
+
+
+    //  console.log("fetching an image");
+    //  //dynamically fetching image with promise
+    //  fetch('basic.jpg').then(response => {
+    //      console.log(response);
+    //      //extracting blob object from response
+    //      return response.blob();
+    //     //chaining another promise on promise
+    //  }).then(blob => {
+    //     //adding src to image
+    //      console.log(blob);
+    //      //using createObjectURL function to convert data type
+    //      document.getElementById('image').src=URL.createObjectURL(blob);
+    //  }).catch(error => {
+    //      console.log('error');
+    //      console.log(error);
+    //  })
+ </script>   
+</body>
+</html>
